@@ -149,7 +149,7 @@ flowchart LR
 flowchart LR
     A[Client] -->|Http Request| B[HttpHandler]
     B --> |handle| C[Controller]
-    D[setRoutage('/boards')] --> |"GET" | E[mappingMethod]
+    D[setRoutage("/boards")] --> |"GET" | E[mappingMethod]
     E --> |doGet| F[UserController]
     F --> |return| G[OMR]
     H[objectMappingResolver] --> |"Object(Json)"| I[response]
