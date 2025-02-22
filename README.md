@@ -1,12 +1,14 @@
+# Slate & Winter Project
+
 ## 📚 목차
 - [Slate](#slate)
-  - [프로젝트 소개](#slate-소개)
+  - [프로젝트 소개](#slate-프로젝트-소개)
   - [핵심 기능](#slate-핵심-기능)
   - [기술 구조](#slate-기술-구조)
   - [상세 구현](#slate-상세-구현)
   - [프로젝트 회고](#slate-프로젝트-회고)
 - [Winter](#winter)
-  - [프로젝트 소개](#winter-소개)
+  - [프로젝트 소개](#winter-프로젝트-소개)
   - [핵심 기능](#winter-핵심-기능)
   - [기술 구조](#winter-기술-구조)
   - [상세 구현](#winter-상세-구현)
@@ -16,7 +18,7 @@
 
 ## Slate
 
-### Slate 소개
+### Slate 프로젝트 소개
 Slate는 프론트엔드 뷰 동적 제작을 도와주는 프레임워크입니다. 바닐라 JavaScript의 본질을 유지하면서도 효율적인 웹 개발을 가능하게 하는 것이 특징입니다.
 
 #### 주요 특징
@@ -25,78 +27,44 @@ Slate는 프론트엔드 뷰 동적 제작을 도와주는 프레임워크입니
 - 컴포넌트 기반 재사용 가능한 구조
 - 동적 렌더링 및 리소스 관리 시스템
 
-### Slate 핵심 기능
-
-#### 위젯 시스템
-- HTML, CSS, JS 파일을 하나의 위젯으로 통합 관리
-- 동적 렌더링 및 컴포넌트 기반 구조
-- 재사용 가능한 객체 지향적 설계
-
-#### 리소스 관리
-- 동적 리소스 로딩
-- 캐싱 시스템
-- CSS 클래스 충돌 방지 매커니즘
-
-#### 컴포넌트 시스템
-- 확장 가능한 컴포넌트 구조
-- 이벤트 핸들링
-- REST 통신 바인딩
-- 엔티티 생성 관리
-
 ### Slate 기술 구조
 
-#### 핵심 클래스 구조
+#### Slate 전체 프로세스 플로우
 ```mermaid
-classDiagram
-    class DocEngine {
-        +HTMLPipeLine htmlPipeLine
-        +run()
-    }
-    class HTMLPipeLine {
-        +Array widgetStore
-        +connectHTML(attachElement)
-        +nodeToResourceMatch()
-        +getWidgetResource(widgetName, cb)
-        +isDefindRuleCSS()
-    }
-    class Widget {
-        +HTML html
-        +WidgetResrouce WidgetResource
-        +appendHTML()
-        +appendCSS()
-        +appendJS()
-        +renderingHTML()
-    }
-    class WidgetResource {
-        +Map components
-        +findElement()
-        +addComp(comp)
-        +getComp(comp)
-    }
-    class Component {
-        +WidgetResource parent
-    }
-    DocEngine --> HTMLPipeLine : references
-    Widget <--> WidgetResource : references
-    WidgetResource <--> Component : references
+flowchart LR
+    A[IndexPage] -->|DOMContentLoaded| B[DocEngine]
+    B --> |Run| C[HtmlPipeLine]
+    C --> |ResourceMatch| D[Widget]
+    D --> |Append HTML, CSS, JS| E[Rendering]
+    F -->|WidgetResource| G[User Extends WidgetResource]
 ```
 
-### Slate 상세 구현
+1. 인덱스 페이지에서 `DOMContentLoaded` 이벤트 발생
+2. `DocEngine` 실행 후, `HtmlPipeLine`이 사용자 정의 위젯 태그 확인
+3. 위젯을 로드(HTML, CSS, JS) 후 문서에 부착
+4. 사용자는 위젯 리소스를 확장하여 객체를 정의
+5. `Component`를 부착하여 Slate 내에서 기능 확장
 
-#### HTMLPipeLine 구현
-```javascript
-nodeToResourceMatch() {
-    for(let it of this._docNodeStore) {
-        const key = it[0];
-        const value = it[1];
-        for(let i = 0; i < value.length; ++i) {
-            this.getWidgetResource(key, (resource) => {
-                const widget = this.spawnWidget(resource.key, value[i], i);
-                widget.rendering();
-            });
-        }
-    }
-}
+#### HTMLPipeLine 흐름
+```mermaid
+flowchart TD
+    A[HTMLPipeLine] -->|Scan Document| B[Find Custom Widgets]
+    B --> |Load Widget Resources| C[Fetch HTML, CSS, JS]
+    C --> |Apply Widget| D[Render and Append to DOM]
+```
+
+#### Widget Lifecycle
+```mermaid
+sequenceDiagram
+    participant User
+    participant Document
+    participant Widget
+    participant Component
+    User->>Document: Load HTML
+    Document->>Widget: Initialize Widget
+    Widget->>Component: Attach Components
+    Component->>Widget: Handle Events & Data
+    Widget->>Document: Render Final UI
 ```
 
 ### Slate 프로젝트 회고
@@ -112,7 +80,7 @@ nodeToResourceMatch() {
 
 ## Winter
 
-### Winter 소개
+### Winter 프로젝트 소개
 Winter는 Spring Framework의 핵심 개념을 학습하고 이해하기 위해 만든 'Fake Spring' 프로젝트입니다. Java의 기본 HTTP 서버 모듈을 사용하여 Spring과 유사한 구조의 웹 서버를 구현했습니다.
 
 #### 주요 특징
@@ -121,60 +89,45 @@ Winter는 Spring Framework의 핵심 개념을 학습하고 이해하기 위해 
 - 데이터베이스 연동 및 ORM 유사 기능
 - 공통 로직의 추상화
 
-### Winter 핵심 기능
-
-#### 서버 시스템
-- HTTP 요청/응답 처리
-- 라우팅 시스템
-- 컨트롤러 기반 구조
-
-#### 데이터베이스 연동
-- Oracle 데이터베이스 연동
-- Connection Pool 관리
-- SQL 쿼리 자동화
-
 ### Winter 기술 구조
 
-#### 시스템 구조
-```mermaid
-flowchart LR
-    A[AppConfig] -->|Run| B[DataBase]
-    A -->|Run| C[Server]
-    B --> |createDataSource| D[OracleConnectionPool]
-    C --> |loadControllers, start| F[HttpServer]
-```
-
-#### 요청 처리 흐름
+#### Winter 전체 프로세스 플로우
 ```mermaid
 flowchart LR
     A[Client] -->|Http Request| B[HttpHandler]
     B --> |handle| C[Controller]
-    D[setRoutage("/boards")] --> |"GET" | E[mappingMethod]
-    E --> |doGet| F[UserController]
-    F --> |return| G[OMR]
-    H[objectMappingResolver] --> |"Object(Json)"| I[response]
+    D[setRoutage '/boards'] -->|GET| E[mappingMethod]
+    E -->|doGet| F[UserController]
+    F -->|return| G[OMR]
+    H[objectMappingResolver] -->|Object Json| I[Response]
     I -->|Http Response| J[Client]
 ```
 
-### Winter 상세 구현
+#### 데이터베이스 연동 흐름
+```mermaid
+flowchart TD
+    A[Client Request] -->|Query| B[DataBase Layer]
+    B --> |Execute SQL| C[Oracle Database]
+    C -->|Return Data| B
+    B -->|Convert to Object| D[Object Mapping Resolver]
+    D -->|Send Response| A
+```
 
-#### Controller 구현 예시
-```java
-public class UserGetController extends Controller implements Get {
-    @Override
-    public ControllerProperties getProperties() {
-        return new ControllerProperties()
-                .setRoutage("/user/");
-    }
-    @Override
-    public User doGet(HttpExchange exchange) {
-        PathVariable pathVariable = pathVariable(exchange);
-        String uuid = pathVariable.value.get(0);
-        String sql = "SELECT * FROM app_user WHERE uuid = ?";
-        List<User> user = db.sqlQuery(sql, User.class, uuid);
-        return user.get(0);
-    }
-}
+#### 컨트롤러 처리 흐름
+```mermaid
+sequenceDiagram
+    participant Client
+    participant HttpHandler
+    participant Controller
+    participant Service
+    participant Repository
+    Client->>HttpHandler: Send HTTP Request
+    HttpHandler->>Controller: Route Request
+    Controller->>Service: Process Logic
+    Service->>Repository: Query Database
+    Repository->>Service: Return Data
+    Service->>Controller: Process Response
+    Controller->>Client: Send HTTP Response
 ```
 
 ### Winter 프로젝트 회고
@@ -185,6 +138,38 @@ public class UserGetController extends Controller implements Get {
 #### ❌ 아쉬운 점
 - 컨트롤러 내부 클래스로만 처리하여 구조가 다소 경직됨
 - SQL을 코드 내에 직접 작성하여 유지보수가 어려워질 가능성 존재
+
+---
+
+## 추가 정보
+
+### 사용 기술
+- **프로그래밍 언어**: Java, JavaScript
+- **라이브러리 및 프레임워크**: Ojdbc, Lombok, Jackson, Matter.js
+
+### 구현 기능
+#### 공통 기능
+- 회원가입, 로그인
+- 게시판 작성, 삭제
+- 코멘트 작성
+- 프로필 이미지 파일 업로드
+- 스토어 아이템 등록
+- REST API 설계 및 개발
+
+#### Slate
+- 동적 렌더링
+
+#### Winter
+- 오라클 DB 연동
+
+### 프로젝트 미디어
+![Board](board-0.gif)
+![BM](bm-0.gif)
+![Thomas](thomas-0.gif)
+
+### 프로젝트 링크
+- **GitHub**: [슬레이트-윈터 프로젝트](https://github.com/gtypeid/slate-winter.git)
+- **발표 자료**: [Google Slides](https://docs.google.com/presentation/d/1ZeOPq-6PRY6_joYS3ArO-okQF4NZ23CP/edit?usp=sharing&ouid=109390394369097049050&rtpof=true&sd=true)
 
 이 리드미 파일은 Slate와 Winter의 주요 개념, 기술 구조 및 상세 구현 내용을 포함합니다. 추가 수정이 필요하면 알려주세요!
 
