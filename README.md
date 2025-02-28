@@ -600,7 +600,78 @@ App --> DataBase : references
 Server --> HttpServer : references
 DataBase --> CheckTable : references
 ```
-                            
+
+#### Controller
+- 공통 로직을 상단에 올려, 프로세스 플로우를 숨깁니다.
+사용자는 비즈니스 로직에만 집중할 수 있습니다.
+  - UserGetController
+  - Get 인터페이스를 통해 doGet이 호출됩니다.
+  "/users/{userId}" 에 기반하는 userId를 기반으로,
+  OJdbc LowLevel Connection을 자동화한 sqlQuery를 통해 객체 자체를 반환받습니다.
+  리턴 타입에 의거 objectMappingResolver를 통해 Json타입으로 클라이언트에게 응답하며,
+  Filter를 통해 seq, passWord, mdate등의 필드를 제거하여 전달합니다.
+  ```java
+  public class UserGetController extends Controller implements Get {
+      @Override
+      public ControllerProperties getProperties() {
+          return new ControllerProperties()
+                  .setRoutage("/user/");
+      }
+  
+      @Override
+      public User doGet(HttpExchange exchange) {
+          PathVariable pathVariable = pathVariable(exchange);
+          String uuid = pathVariable.value.get(0);
+          String sql = "SELECT * FROM app_user WHERE uuid = ?";
+          List<> user = db.sqlQuery(sql, User.class, uuid);
+          return user.get(0);
+      }
+      
+  }
+  ```
+  
+  - UserLoginController
+  - Post 인터페이스를 통해 doPost가 호출됩니다.
+  또한, 파싱된 바디 데이터가 jsonObject로 넘어옵니다.
+  ```java
+  public class UserLoginController extends Controller implements Post {
+      @Override
+      public ControllerProperties getProperties() {
+          return new ControllerProperties()
+                  .setRoutage("/login");
+      }
+  
+      @Override
+      public HttpResulter doPost(HttpExchange exchange, JSONObject jsonObject) {
+          User user = cast(jsonObject, User.class);
+          User findUser = findUser(user);
+  
+          if(findUser != null){
+              if( findUser.getPassWord().equals(user.getPassWord()) ){
+                  return new HttpResulter()
+                          .setFilterData(findUser)
+                          .setStatusCode(200)
+                          .setMsg("로그인 성공");
+              }
+          }
+  
+          return new HttpResulter()
+                  .setStatusCode(400)
+                  .setMsg("로그인 실패");
+      }
+  
+  
+      private User findUser(User insertUser){
+          String sql = "SELECT * FROM app_user WHERE id = ?";
+          List users = db.sqlQuery(sql, User.class, insertUser.getId());
+          if(!users.isEmpty()){
+              return users.get(0);
+          }
+          return null;
+      }
+  }
+  ```
+  
 ## 📊 슬레이트 프로젝트 회고
 ### 좋았던 점
 - 과거에 HTML,CSS를 통해 웹을 제작해보는 웹에디터를 제작시도 해본 적이 있습니다. 그 아이디어를 차용 프론트
@@ -643,26 +714,7 @@ ORACLE.BLOB의 강제 캐스팅 문제를 해결하였습니다.
 않는 흐름을 별도로 만들고, CompleteResponse 인터페이스를 추가하여 컨트롤러 상단에서 리소스 해제를 담당하도록
 로직을 개선했습니다
 
-## 📈 성능 최적화
+## 📜 마무리
 
-## 🔍 기술적 도전과 해결 방법
 
-## ⚙️ 설치 및 실행 방법
 
-## 🧪 테스트
-
-## 📝 API 문서
-
-## 🌟 핵심 기여
-
-## 📚 회고 및 개선점
-
-## 📜 라이센스
-
-## 🙏 감사의 말
-
-## 📞 연락처
-
-- 이메일: your.email@example.com
-- 블로그: [블로그 이름](https://your-blog.com)
-- 깃허브: [GitHub 프로필](https://github.com/yourusername)
