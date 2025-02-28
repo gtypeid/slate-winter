@@ -232,16 +232,129 @@ EntityGenerator의 조합을 사용하면 API 호출에 의한 동적 생성 작
 - 사용자는 위젯 리소스를 확장하여 객체를 정의 및,
 - Component를 부착하여 Slate 내에서 생산성 확장할 수 있습니다.
 
+```mermaid
 flowchart LR
 A[IndexPage] -->|DOMContentLoaded| B[DocEngine]
 B --> |Run| C[HtmlPipeLine]
 C --> |ResourceMatch| D[Widget]
 F[Widget] --> |Append HTML, CSS, JS| G[Rendering]
 H -->|WidgetResource| H[User Extends WidgetResource]
-  
+```
+
 ### 클래스 구조
+```mermaid
+classDiagram
+class DocEngine {
+  +HTMLPipeLine htmlPipeLine
+  +run()
+}
+class HTMLPipeLine {
+  +Array widgetStore
+  +connectHTML(attachElement)
+  +nodeToResourceMatch()
+  +getWidgetResource(widgetName, cb)
+  +isDefindRuleCSS()
+}
 
+class Widget{
+    +HTML html
+    +WidgetResrouce WidgetResource
+    +appendHTML()
+    +appendCSS()
+    +appendJS()
+    +renderingHTML()
+}
 
+class WidgetResource{
+    +Map components
+    +findElement()
+    +addComp(comp)
+    +getComp(comp)
+}
+
+class Component{
+    +WidgetResource parent
+}
+
+DocEngine  --> HTMLPipeLine : references
+Widget  <--> WidgetResource : references
+WidgetResource  <--> Component : references
+```
+```mermaid
+classDiagram
+Component <|-- DocEventHandler
+Component <|-- RestBinder
+Component <|-- EntityGenerator
+Component : +WidgetResource parent
+class DocEventHandler{
+    +bindEvent(eventType, element) 
+}
+class RestBinder{
+    +Map resourceStore
+    +bindConfig(config) 
+    +send(key, cb)
+    +getInboundData(config, cb)
+    +getPackerItems(config, packer)
+}
+    class EntityGenerator{
+    +Map resourceStore
+    +makeElements(attachment, widgetKey, items) 
+    +entitiyDelete(widgetKey, uIndex)
+    +clearWidgets(widgetKey)
+}
+```
+#### HTMLPipeLine
+- Document와 Slate의 연결성을 위한 매니저 클래스입니다.
+위젯 리소스를 불러와 위젯을 생성 삭제 관리 합니다.
+  - nodeToResourceMatch
+  - 노드를 찾아내어 Widget을 생성합니다.
+  ```javascript
+  for(let it of this._docNodeStore){
+      const key = it[0];
+      const value = it[1];
+      for(let i = 0; i < value.length; ++i){
+          this.getWidgetResource(key, (resource)=>{
+              const widget = this.spawnWidget(resource.key, value[i], i);
+              widget.rendering();
+          });
+      }
+  }
+  ```
+  - getWidgetResource
+  - 리소스 비동기로 불러오며, 캐싱 이력 있다면 캐싱 처리 합니다.
+  ```javascript
+  getWidgetResource(widgetName, resultCB){
+      const slateMap = DocEngine.instance.slateMap;
+      const wname = widgetName.toLowerCase();
+
+      if(this.isCashDocHtmlResource(wname, resultCB)) return;
+
+      .
+      .
+      .
+
+      Promise.all([pHTML, pCSS, pJS]).then((value) => {
+          const promiseResult = {
+              document: value[0],
+              css: value[1],
+              js: value[2]
+          };
+
+          this.addDocHtmlResource(wname, promiseResult);
+          resultCB(this._docHtmlResourceStore.get(wname));
+      });
+  }
+
+  async asyncGetWidgetResource(widgetName){
+      const result = new Promise(resolve => {
+          this.getWidgetResource(widgetName, (resource)=>{
+              resolve(resource);
+          });
+      });
+      return result;
+  }            
+  ```
+  
 ## 📝 윈터 다이어그램
 ### 프로세스 플로우
 ### 클래스 구조
