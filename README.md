@@ -354,7 +354,142 @@ class RestBinder{
       return result;
   }            
   ```
+#### Widget
+- 비동기로 불러온 HTML, CSS, JS 파일을 기반 Doucment와 부착되며,
+이하 세 파일에 대한 정보를 보유하는 Slate 객체입니다.
+  - appendHTML
+  - 읽어온 HTML File 첫 번째 요소 내의 자식을 순환 및,
+  Widget에 매칭되도록 Class 이름 변경하고,
+  이로써 HTML내 Class 이름 중복을 회피하며 document에 부착합니다.
+
+  ```javascript
+   appendHTML(dhrResult, key){
+      // 읽어온 문서 첫번째 요소
+      .
+      .
+      .
+
+      Util.sequenceTree(this._widgetHTML, (element) => {
+          const makeName = key.concat('-' , element.className);
+          element.className = makeName;
+      });
+  }
+  ```
   
+  - appendCSS
+  - CSS File을 읽어 정규식을 통해 Key Value 파싱
+  StyleSheet에 정의 된 적이 있다면 리턴하여 중복 정의 회피하며,
+  StyleSheet내의 Css declarations Insert Rule에 Widget 이름과 매칭하여 속성을 정의합니다.
+  ```javascript
+  appendCSS(dhrResult, key, htmlPipeLine){
+    if (htmlPipeLine.isDefindRuleCSS(key)) return;
+
+    .
+    .
+    .
+
+    for (let i = 0; i < tags.length; ++i) {
+        const makeCName = '.'.concat( key, '-', tags[i].substring(1, tags[i].length -1) );
+        const makeProperty = makeCName.concat(propertys[i]);
+        document.styleSheets[0].insertRule(makeProperty);
+    }
+
+    htmlPipeLine.updateDefindRuleCSS(key);
+  }
+  ```
+  - appendJS
+  - JS File을 읽어 해당 클래스 동적 할당 및 widgetResource로서 관리 합니다.
+  ```javascript
+  appendJS(dhrResult, key){
+      const moduel = dhrResult.dhr.js;
+      if(moduel && moduel.default != null){
+          const classType = moduel.default;
+          const   cwrd = {...WidgetResource.CWRD };
+                  cwrd.parnetWidget = this;
+                  cwrd.parnetKey = key;
+          this._widgetResourceObj = new classType(cwrd);
+      }
+  }
+  ```
+#### Widget Resource
+  - Widget이 불러온 JS는 WidgetResource Class로 확장됩니다.
+WidgetResource는 다수의 컴포넌트를 부착해 생산성을 도움받을 수 있으며,
+사용자로 인해 확장되어 Slate 내에서 제작된 위젯이 조작될 수 있도록 합니다.
+
+#### Component
+  - WidgetResource에 부착되며, Component는 특정 기능을 위임 담당하며,
+사용자는 Component상속 받아 확장 기능을 추가합니다.
+
+#### 사용자 위젯 Board main-view
+  - WidgetResource를 상속받은 MainView widget
+  Board App 시작 포인트 Widget 입니다.
+  다수의 위젯과 통신하며, 다수의 컴포넌트가 부착되어 도움을 받을 수 있습니다.
+  - DocEventHandler로 부터 Scroll Event를 할당하여 스크롤 발생 시,
+  RestBinder를 통해 서버로 요청을 보냅니다.
+  다만 RestBinder Config 부터 PackingType을 Client로 정의하였기에,
+  한 번의 요청에 다수의 JSon을 응답받아, 클라이언트가 다음 아이템을 파악하여,
+  클라이언트가 서버에 요청하는 횟수를 최적화 합니다.
+  이후, 다음 진입되는 Json Item들을 EntityGenerator가 받아
+  Json Item이 주입되는 Entity라 불리는 Widget들을 생성합니다.
+
+  ```javascript
+  export default class MainView extends WidgetResource{
+      constructor(cwrd){
+          super(cwrd);   
+          .
+          .
+      }
+  
+      rConstructor(){
+          super.rConstructor();
+
+          this._eventHandler = this.addComp(DocEventHandler);
+          this._restBinder = this.addComp(RestBinder);
+          this._generator = this.addComp(EntityGenerator);
+  
+          const eh = this._eventHandler;
+          const rb = this._restBinder;
+          eh.bindEvent(DocEventHandler.EEvent.SCROLL, "container");
+          eh.bindEvent(DocEventHandler.EEvent.MOUSE_ENTER, "frame");
+          eh.bindEvent(DocEventHandler.EEvent.MOUSE_LEAVE, "frame");
+          eh.bindEvent(DocEventHandler.EEvent.CLICK, postButton);
+          rb.bindConfig( this.getNBoardConfig() );
+  
+          this.preGenerateBoardView();
+          this.refresh();
+      }
+
+
+      getNBoardConfig(){
+          const   requestType = {...HTTP.RequestType };
+                  requestType.method = HTTP.ERequestMethod.GET;
+                  requestType.URL = "http://localhost:8081/boards";
+                  requestType.responseType = HTTP.EResponseType.JSON;
+  
+          const   config = {...RestBinder.RestBinderConfig };
+                  config.key = nBoardHTTPKey;
+                  config.RequestType = requestType;
+                  config.itemSize = 9;
+                  config.packageLoc = RestBinder.ERBCPackageLoc.client;
+                  config.progressing = true;
+                  
+          return config;
+      }
+
+      scroll(target, event){
+          const pes = Util.getScrollPes(target)
+          const div = 98.0;
+          if(pes >= div){
+              this.doSend();
+          }
+      }
+
+      doSend(){
+          this._restBinder.send(nBoardHTTPKey, (items)=>{
+              this._generator.makeElements("container", nBoardWidgetKey, items);
+          });
+      }
+  ```     
 ## 📝 윈터 다이어그램
 ### 프로세스 플로우
 ### 클래스 구조
