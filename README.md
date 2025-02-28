@@ -36,20 +36,25 @@ Low Level단의 DB Connection의 반복되는 코드 또한 공통 처리 하여
 ## 🚀 슬레이트를 통해 제작한 뷰
 
 ### Board (게시판) 서비스
+<img src="https://github.com/user-attachments/assets/6a209c0f-1c73-4782-848d-4a3789bb413b" width="500" alt="프로젝트 로고"><br><br>
 초기에는 Google Sheet의 엑셀을 활용하여 게시판 CRUD 기능을
 대신했습니다 . App Script의 doPost 메서드를 사용하여 셀에 값을
 입력하거나 , URL을 통해 엑셀 시트의 데이터를 .CSV 형식으로 가져와
 게시글을 생성했습니다. 이후에는 `Winter` 서버를 사용하여 오라클
 데이터베이스와 연동하였습니다.
+<br><br>
 
 ### BM (구매자, 판매자, 오더) 서비스
+<img src="https://github.com/user-attachments/assets/1d2abf0d-b06c-42d9-86bc-414c68837229" width="500" alt="프로젝트 로고"><br><br>
 구매자, 판매자, 오더 서비스를 각각 독립적으로 구현하였습니다. 구매자는
 판매자 서버의 API를 통해 스토어와 스토어 아이템 정보를 획득하며, 판매자
 서버는 스토어와 아이템을 등록 및 관리하고, 구매 내역을 확인합니다. 오더
 서비스는 발생한 오더 내역에 대해 자세한 정보를 제공합니다.
 `Winter` 서버를 사용하였습니다.
+<br><br>
 
 ### Thomas Friends (토마스 프렌즈)
+<img src="https://github.com/user-attachments/assets/79878957-86de-4c0a-9b94-85eb6861c9c7" width="500" alt="프로젝트 로고"><br><br>
 Common Module 프로젝트 중 제작했던 프론트 뷰 입니다.
 학원 내 활용할 컴퓨터 자원이 많았기에, 클라우드 환경이라 간주 할 수 있는
 프로젝트 고려하였고 , 중앙에서 다수의 컴퓨터 컨트롤 하기 위한 환경
@@ -57,13 +62,16 @@ Common Module 프로젝트 중 제작했던 프론트 뷰 입니다.
 초기에는 TCP Layer 4 계층 통신을 사용하려 했으나, 최종적으로 Layer 7 계층의
 WebSocket을 활용하기로 결정했습니다. 프론트 뷰는 해당 컴퓨터의 서버를
 원격으로 작동시킬 수 있는 웹 소켓 서비스를 제공합니다.
+<br><br>
 
 ### Folio (포트폴리오 사이트)
+<img src="https://github.com/user-attachments/assets/b3babdef-0bdd-4610-849c-7d70d4b4cacd" width="500" alt="프로젝트 로고"><br><br>
 커리큘럼 과정 중 작업한 프로젝트들의 상세 정보를
 게시한 곳입니다.
 각 프로젝트 소개, 이미지, 설명, 커리큘럼 발표 PPT,
 프로세스 플로우, 클래스 다이어그램 , 핵심 클래스 코드
 등을 포함한 다양한 설명을 포함합니다.
+<br><br>
 
 ## 🔍 살펴보기
 
