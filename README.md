@@ -132,11 +132,6 @@ Winter 서버로부터 받은 응답 입니다.
 판매자 서버로부터 응답받은 모습입니다.
 <br><br>
 
-## 🔍 윈터 살펴보기
-### 윈터
-<img src="https://github.com/user-attachments/assets/f30749db-4c1a-4164-bc3d-6dd330cd5c70" width="600" alt="프로젝트 로고"><br><br>
-<img src="https://github.com/user-attachments/assets/7631c2f8-8f73-4f49-a599-b6f431e30f5a" width="600" alt="프로젝트 로고"><br><br>
-
 ## 🏗️ 슬레이트 구현 위젯
 
 <img src="https://github.com/user-attachments/assets/5838ef0b-3646-47fd-8a32-f7a6f9ae1d60" width="200" alt="프로젝트 로고"><br>
@@ -154,6 +149,12 @@ Winter 서버로부터 받은 응답 입니다.
 <img src="https://github.com/user-attachments/assets/f5520270-9263-4829-9438-0f528d71a6fc" width="200" alt="프로젝트 로고"><br>
 - Folio ( 포트폴리오 사이트 ) : 12개 위젯
 <br><br>
+
+## 🔍 윈터 살펴보기
+### 윈터
+<img src="https://github.com/user-attachments/assets/f30749db-4c1a-4164-bc3d-6dd330cd5c70" width="600" alt="프로젝트 로고"><br><br>
+<img src="https://github.com/user-attachments/assets/7631c2f8-8f73-4f49-a599-b6f431e30f5a" width="600" alt="프로젝트 로고"><br><br>
+
 
 ## 📋 슬레이트 구현 기능 
 
