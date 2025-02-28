@@ -224,6 +224,28 @@ EntityGenerator의 조합을 사용하면 API 호출에 의한 동적 생성 작
   - 다수, 특정 오더 조회
   - 오더 추가, 오더 승인
 
+## 📝 슬레이트 다이어그램
+### 프로세스 플로우
+- 인덱스 페이지에서 DOMContentLoaded 진입 합니다.
+- DocEngine Run 실행 HTML PipeLine에서 사용자 정의 위젯 태그 확인 후,
+- 위젯을 로드(HTML, CSS, JS)후 문서에 부착합니다.
+- 사용자는 위젯 리소스를 확장하여 객체를 정의 및,
+- Component를 부착하여 Slate 내에서 생산성 확장할 수 있습니다.
+
+flowchart LR
+A[IndexPage] -->|DOMContentLoaded| B[DocEngine]
+B --> |Run| C[HtmlPipeLine]
+C --> |ResourceMatch| D[Widget]
+F[Widget] --> |Append HTML, CSS, JS| G[Rendering]
+H -->|WidgetResource| H[User Extends WidgetResource]
+  
+### 클래스 구조
+
+
+## 📝 윈터 다이어그램
+### 프로세스 플로우
+### 클래스 구조
+
 ## 📊 슬레이트 프로젝트 회고
 ### 좋았던 점
 - 과거에 HTML,CSS를 통해 웹을 제작해보는 웹에디터를 제작시도 해본 적이 있습니다. 그 아이디어를 차용 프론트
