@@ -37,7 +37,7 @@ Low Level단의 DB Connection의 반복되는 코드 또한 공통 처리 하여
 
 ### Board (게시판) 서비스
 <img src="https://github.com/user-attachments/assets/6a209c0f-1c73-4782-848d-4a3789bb413b" width="500" alt="프로젝트 로고"><br><br>
-초기에는 Google Sheet의 엑셀을 활용하여 게시판 CRUD 기능을
+- 초기에는 Google Sheet의 엑셀을 활용하여 게시판 CRUD 기능을
 대신했습니다 . App Script의 doPost 메서드를 사용하여 셀에 값을
 입력하거나 , URL을 통해 엑셀 시트의 데이터를 .CSV 형식으로 가져와
 게시글을 생성했습니다. 이후에는 `Winter` 서버를 사용하여 오라클
@@ -46,7 +46,7 @@ Low Level단의 DB Connection의 반복되는 코드 또한 공통 처리 하여
 
 ### BM (구매자, 판매자, 오더) 서비스
 <img src="https://github.com/user-attachments/assets/1d2abf0d-b06c-42d9-86bc-414c68837229" width="500" alt="프로젝트 로고"><br><br>
-구매자, 판매자, 오더 서비스를 각각 독립적으로 구현하였습니다. 구매자는
+- 구매자, 판매자, 오더 서비스를 각각 독립적으로 구현하였습니다. 구매자는
 판매자 서버의 API를 통해 스토어와 스토어 아이템 정보를 획득하며, 판매자
 서버는 스토어와 아이템을 등록 및 관리하고, 구매 내역을 확인합니다. 오더
 서비스는 발생한 오더 내역에 대해 자세한 정보를 제공합니다.
@@ -55,7 +55,7 @@ Low Level단의 DB Connection의 반복되는 코드 또한 공통 처리 하여
 
 ### Thomas Friends (토마스 프렌즈)
 <img src="https://github.com/user-attachments/assets/79878957-86de-4c0a-9b94-85eb6861c9c7" width="500" alt="프로젝트 로고"><br><br>
-Common Module 프로젝트 중 제작했던 프론트 뷰 입니다.
+- Common Module 프로젝트 중 제작했던 프론트 뷰 입니다.
 학원 내 활용할 컴퓨터 자원이 많았기에, 클라우드 환경이라 간주 할 수 있는
 프로젝트 고려하였고 , 중앙에서 다수의 컴퓨터 컨트롤 하기 위한 환경
 구축시도를 해보았습니다.
@@ -66,7 +66,7 @@ WebSocket을 활용하기로 결정했습니다. 프론트 뷰는 해당 컴퓨�
 
 ### Folio (포트폴리오 사이트)
 <img src="https://github.com/user-attachments/assets/b3babdef-0bdd-4610-849c-7d70d4b4cacd" width="500" alt="프로젝트 로고"><br><br>
-커리큘럼 과정 중 작업한 프로젝트들의 상세 정보를
+- 커리큘럼 과정 중 작업한 프로젝트들의 상세 정보를
 게시한 곳입니다.
 각 프로젝트 소개, 이미지, 설명, 커리큘럼 발표 PPT,
 프로세스 플로우, 클래스 다이어그램 , 핵심 클래스 코드
@@ -74,6 +74,66 @@ WebSocket을 활용하기로 결정했습니다. 프론트 뷰는 해당 컴퓨�
 <br><br>
 
 ## 🔍 살펴보기
+### Slate 시연
+<img src="https://gtypeid.github.io/resource/path/folio/board-0.gif" width="500" alt="프로젝트 로고"><br><br>
+- 로그인 및 게시판 상세보기, 코멘트 작성
+RestBinder를 통해 스크롤시 Winter API를 요청하여
+게시글을 동적으로 생성하는 모습입니다.
+<br><br>
+
+<img src="https://gtypeid.github.io/resource/path/folio/board-2.png" width="500" alt="프로젝트 로고"><br><br>
+- 회원가입 및 로그인을 통한
+Winter 서버로부터 받은 응답 입니다.
+<br><br>
+
+<img src="https://gtypeid.github.io/resource/path/folio/board-3.png" width="500" alt="프로젝트 로고"><br><br>
+- 게시글 및 파일을 업로드 합니다.
+파일을 Blob화 하여 DB에 저장합니다
+Winter 서버로부터 받은 응답 입니다.
+<br><br>
+
+<img src="https://gtypeid.github.io/resource/path/folio/board-6.png" width="500" alt="프로젝트 로고"><br><br>
+- 게시글 위젯입니다. HTML, CSS, JS
+이하 셋 리소스를 묶어 하나로 랜더링합니다.
+<br><br>
+
+### BM 시연
+<img src="https://gtypeid.github.io/resource/path/folio/bm-0.gif" width="300" alt="프로젝트 로고"><br><br>
+- 구매자 서비스 입니다. 인트로 및 로그인을 이후
+스토어 카테고리를 Winter 서버에 요청 합니다.
+스토어로 등록된 판매자, 메뉴를 구매하는 모습입니다.
+<br><br>
+
+<img src="https://gtypeid.github.io/resource/path/folio/bm-1.png" width="500" alt="프로젝트 로고"><br><br>
+- 구매자, 판매자, 오더, 각각의 서비스로 존재하는 모습입니다.
+<br><br>
+
+<img src="https://gtypeid.github.io/resource/path/folio/bm-2.png" width="300" alt="프로젝트 로고"><br><br>
+- 로그인 화면, 로그인 위젯 입니다.
+<br><br>
+
+<img src="https://gtypeid.github.io/resource/path/folio/bm-3.png" width="500" alt="프로젝트 로고"><br><br>
+- 카테고리 선택 및 스토어 리스트를
+판매자 서버로부터 응답받은 모습입니다.
+<br><br>
+
+## 🏗️ 구현 위젯
+
+<img src="https://github.com/user-attachments/assets/5838ef0b-3646-47fd-8a32-f7a6f9ae1d60" width="200" alt="프로젝트 로고"><br>
+- Board ( 게시판 ) : 7개 위젯
+<br><br>
+
+<img src="https://github.com/user-attachments/assets/7f5d84d2-c7b6-4f3f-aa14-5fa8bf1b70c3" width="200" alt="프로젝트 로고"><br>
+- BM ( 구매자, 판매자, 오더 ) : 17개 위젯
+<br><br>
+
+<img src="https://github.com/user-attachments/assets/e449c2c7-84c4-47ad-864d-1677c1a40d7b" width="200" alt="프로젝트 로고"><br>
+- Thomas ( 토마스 ) : 11개 위젯
+<br><br>
+
+<img src="https://github.com/user-attachments/assets/f5520270-9263-4829-9438-0f528d71a6fc" width="200" alt="프로젝트 로고"><br>
+- Folio ( 포트폴리오 사이트 ) : 12개 위젯
+<br><br>
 
 ## 📋 시스템 아키텍처
 
