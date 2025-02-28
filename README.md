@@ -432,8 +432,8 @@ WidgetResource는 다수의 컴포넌트를 부착해 생산성을 도움받을 
   이후, 다음 진입되는 Json Item들을 EntityGenerator가 받아
   Json Item이 주입되는 Entity라 불리는 Widget들을 생성합니다.
 
-  ```javascript
-  export default class MainView extends WidgetResource{
+    ```javascript
+    export default class MainView extends WidgetResource{
       constructor(cwrd){
           super(cwrd);   
           .
@@ -489,11 +489,118 @@ WidgetResource는 다수의 컴포넌트를 부착해 생산성을 도움받을 
               this._generator.makeElements("container", nBoardWidgetKey, items);
           });
       }
-  ```     
+    ```
+     
 ## 📝 윈터 다이어그램
 ### 프로세스 플로우
+- App Config 기반 App을 가동하며, DataBase, Server 초기 설정을 실행 합니다.
+- DataBase는 OracleDataSource를 준비하며 CheckTable Class를 통해,
+- 테이블, 시퀀스를 생성 삭제 하여 테스트 및 개발 속도를 향상 시킵니다.
+- Server는 HttpServer를 가동하며, App내의 Controller들을 불러와 진입점을 할당합니다.
+  
+```mermaid
+ flowchart LR
+  A["App (AppConfig)"] -->|Run| B[DataBase]
+  A["App (AppConfig)"] -->|Run| C[Server]
+  B --> |createDataSource| D[OracleConnectionPoolDataSource]
+  B --> |? isCheckTable| E[Create,Delete Table
+  Create Sequence]
+  C --> |loadControllers, start|F[HttpServer]
+```
+
+- 클라이언트로 부터 Http 요청을 받으면,
+- Java 모듈의 HttpHandler를 상속 받아 확장한 Controller의 handle이 호출됩니다.
+- Routage요청 포인트에 의거 mappingMethod로 향하며 메소드 타입에 따라, 바디 데이터를 파싱 여부를 확인 합니다.
+- 또한 사용자의 비즈니스 로직에 의거 Controller부터 전달된 리턴 타입을 처리 하기 위해 objectMappingResolver로 향합니다.
+- HttpRequest의 헤더 요청 및 Controller의 반환 타입에 따라 각각의 처리를 진행하며 클라이언트에게 응답합니다.
+
+```mermaid
+flowchart LR
+A[Client] -->|Http Request| B[HttpHandler]
+B --> |handle| C[Controller]
+                            
+D["setRoutage(''/boards'')"] --> |"GET" | E[mappingMethod]
+E --> |doGet| F[UserController]
+F --> |return| G[OMR]
+D["setRoutage(''/boards'')"] --> |"POST" | E1[mappingMethod] 
+E1 --> |doPost| E2[bodyParser]   
+E2 --> |payload| F1[UserController]
+F1 --> |return| G[OMR]
+                       
+H["objectMappingResolver(OMR)"] --> |"String(Static Resource)"|I[response]
+H["objectMappingResolver(OMR)"] --> |"Object(Json)"|I[response]
+H["objectMappingResolver(OMR)"] --> |"List(Jsons)"|I[response]
+H["objectMappingResolver(OMR)"] --> |"Blob"|I[response]
+H["objectMappingResolver(OMR)"] --> |"HttpResulter"|I[response]
+I -->|Http Response| J[Client]
+```
+
+- DataBase로 부터 쿼리 요청 시 데이터 처리 후, 리플렉션을 통해 각 유형에 따라 Statement를 처리합니다.
+- Binder 인터페이스의 Getter, Setter를 통해 변환 처리를 보조 받으며, 그에 준하는 객체로 변환 합니다.
+- 또한, 객체가 Response로 반환 될 때 Filter를 통해 필드 값을 숨겨 전달 할 수 있습니다.
+
+```mermaid
+flowchart LR
+A[sqlQuery] -->|Connection,
+PreparedStatement | B[matchParam]
+B --> |Reflection Object| C[Binder]
+C --> |Setter, Getter, Fillter| A
+```
+  
 ### 클래스 구조
 
+```mermaid
+classDiagram
+AppConfig <|-- BoardApp
+AppConfig : +int PORT
+AppConfig : +String DB_URL
+AppConfig : +appControllers()
+AppConfig : +appSequence(String tableName)
+AppConfig : +appTable(String tableName)
+
+class App{
+    +AppConfig appConfig;
+    +Server server;
+    +DataBase dataBase;
+    +Common common;
+
+    +getInstance()
+    +run()
+}
+
+class Server{
+    +HttpServer httpServer
+    +inIt()
+    +run()
+    +loadControllers(AppConfig appConfig)
+}
+
+class DataBase{
+    +CheckTable CheckTable
+    +OracleConnectionPoolDataSource ocpd
+    +connection()
+    +createDataSource()
+
+    +sqlQuery(String sql, Class type)
+    +sqlQuery(String sql, Class type, Object... params)
+    +matchParam(PreparedStatement pstmt, int index, Object param)
+    +getObject(Class type, ResultSet item)
+}
+
+class CheckTable{
+    +createTable()
+    +deleteTable()
+    +tableExists()
+}
+
+App  --> AppConfig : references
+App  --> Server : references
+App --> DataBase : references
+
+Server --> HttpServer : references
+DataBase --> CheckTable : references
+```
+                            
 ## 📊 슬레이트 프로젝트 회고
 ### 좋았던 점
 - 과거에 HTML,CSS를 통해 웹을 제작해보는 웹에디터를 제작시도 해본 적이 있습니다. 그 아이디어를 차용 프론트
