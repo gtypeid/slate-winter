@@ -715,7 +715,7 @@ ORACLE.BLOB의 강제 캐스팅 문제를 해결하였습니다.
 로직을 개선했습니다
 
 ## 📜 마무리
-- 작업 일 : 2024. 06
+- 작업 일 : 2024. 05
 - 발표 슬라이더 : https://docs.google.com/presentation/d/1ZeOPq-6PRY6_joYS3ArO-okQF4NZ23CP/edit#slide=id.p1
 
 
