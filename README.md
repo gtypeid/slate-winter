@@ -70,6 +70,17 @@ Java HTTP 모듈을 알게 되었습니다. 이후 스프링을 배우고 프로
 
 ### Thomas Friends (토마스 프렌즈)
 <img src="https://github.com/user-attachments/assets/79878957-86de-4c0a-9b94-85eb6861c9c7" width="500" alt="프로젝트 로고"><br><br>
+
+https://github.com/user-attachments/assets/45ada654-5cf9-4ece-a798-bd056911c30f
+
+https://github.com/user-attachments/assets/2455aa3b-1e98-4d38-b8c9-608a42b44983
+
+https://github.com/user-attachments/assets/5ef13dff-29cb-4d87-ac18-38b7ad07606c
+
+
+
+
+
 - Common Module 프로젝트 중 제작했던 프론트 뷰 입니다.
 학원 내 활용할 컴퓨터 자원이 많았기에, 클라우드 환경이라 간주 할 수 있는
 프로젝트 고려하였고 , 중앙에서 다수의 컴퓨터 컨트롤 하기 위한 환경
